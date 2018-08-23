@@ -1,36 +1,8 @@
 FIELD_SIZE = 20;
-SNAKE_SPEED = 150;
+SNAKE_SPEED = 300;
 
 window.onload = startGame();
 window.addEventListener("keydown", changeDirection, false);
-window.addEventListener("touchstart", touchCatched, false);
-window.addEventListener("touchmove", touchEnded, false);
-
-function touchCatched(event) {
-	touch = event;
-}
-
-function touchEnded(event) {
-	var offsetX = touch.changedTouches[0].clientX - event.changedTouches[0].clientX;
-	var offsetY = touch.changedTouches[0].clientY - event.changedTouches[0].clientY;
-	
-	var rule = new Object();
-	
-	if (Math.abs(offsetX) > Math.abs(offsetY)) {
-		if (offsetX < 0) {
-			rule.keyCode = 39;
-		} else {
-			rule.keyCode = 37;
-		}
-	} else {
-		if (offsetY < 0) {
-			rule.keyCode = 40;
-		} else {
-			rule.keyCode = 38;
-		}
-	}
-	changeDirection(rule);
-}
 
 function Cell() {
 	var cell = document.createElement("div");
@@ -93,8 +65,7 @@ function spawnSnake() {
         
         for (var i = randomCell - 3; i < randomCell; i++) {
 		field.children[randomCell - 1].children[i].className = "snake-cell";
-	}
-        
+	}       
 	snake.direction = "left";
 	return snake;
 }
@@ -120,36 +91,39 @@ function startGame() {
 	points.textContent = 0;
 	
 	spawnFood();
-	intervalID = window.setInterval(snakeMotion, SNAKE_SPEED);
+	intervalID = setInterval(snakeMotion, SNAKE_SPEED);
 }
 
 /* up: 38; down:40; left: 37; right: 39*/		
 function changeDirection(event) {
-	if (event.keyCode ==  38) {
+    console.log(event);
+    if (event.keyCode ==  38) {
 		if (snake.direction == "left" || snake.direction == "right") {		
 			snake.direction = "up";
+                        
 		}
 	}
-	if (event.keyCode ==  40) {
+	else if (event.keyCode ==  40) {
 		if (snake.direction == "left" || snake.direction == "right") {
 			snake.direction = "down";
 		}
 	}
-	if (event.keyCode ==  37) {
+	else if (event.keyCode ==  37) {
 		if (snake.direction == "up" || snake.direction == "down") {
 			snake.direction = "left";
 		}
 	}
-	if (event.keyCode ==  39) {
+	else if (event.keyCode ==  39) {
 		if (snake.direction == "up" || snake.direction == "down") {
 			snake.direction = "right";
 		}
 	}
+        snakeMotion();
 }
 
 function snakeMotion() {
-	var nextCell = snake[snake.direction];
-	if (nextCell && (nextCell.className != "snake-cell")) {
+	var nextCell = snake[snake.direction];        
+	if (nextCell && (nextCell.className !== "snake-cell")) {
 		nextCell.direction = snake.direction;
 		nextCell.tail = snake;
 		if (nextCell.eat) {
